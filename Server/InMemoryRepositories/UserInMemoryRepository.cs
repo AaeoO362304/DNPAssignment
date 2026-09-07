@@ -30,7 +30,7 @@ public class UserInMemoryRepository : IUserRepository
         if (existingUser is null)
         {
             throw new InvalidOperationException(
-                $"Post with ID '{user.Id}' not found");
+                $"User with ID '{user.Id}' not found");
         }
 
         users.Remove(existingUser);
@@ -45,7 +45,7 @@ public class UserInMemoryRepository : IUserRepository
         if (userToRemove is null)
         {
             throw new InvalidOperationException(
-                $"Post with ID '{id}' not found");
+                $"User with ID '{id}' not found");
         }
 
         users.Remove(userToRemove);
@@ -58,7 +58,7 @@ public class UserInMemoryRepository : IUserRepository
         if (user is null)
         {
             throw new InvalidOperationException(
-                $"Post with ID '{id}' not found");
+                $"User with ID '{id}' not found");
         }
         return Task.FromResult(user);
     }

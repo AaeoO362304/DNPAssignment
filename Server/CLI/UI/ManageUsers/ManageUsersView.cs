@@ -4,11 +4,15 @@ namespace CLI.UI.ManageUsers;
 
 public class ManageUsersView
 {
-    private readonly IUserRepository _userRepository;
+    private readonly IUserRepository userRepository;
+    private ListUsersView listUsersView;
+    private CreateUserView createUserView;
+    private DeleteUserView deleteUserView;
+    private UpdateUserView updateUserView;
 
     public ManageUsersView(IUserRepository userRepository)
     {
-        this._userRepository = userRepository;
+        this.userRepository = userRepository;
     }
 
     public void Options()
@@ -26,12 +30,20 @@ public class ManageUsersView
                 Console.WriteLine("That option doesnt exist");
                 break;
             case "1" :
+                createUserView = new CreateUserView(userRepository);
+                createUserView.createUser();
                 break;
             case "2" :
+                listUsersView = new ListUsersView(userRepository);
+                listUsersView.ShowAllUsers();
                 break;
             case "3" :
+                updateUserView = new UpdateUserView(userRepository);
+                updateUserView.updateUser();
                 break;
             case "4" :
+                deleteUserView = new DeleteUserView(userRepository);
+                deleteUserView.DeleteUser();
                 break;
         }
     }

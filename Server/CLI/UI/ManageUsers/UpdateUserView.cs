@@ -12,7 +12,7 @@ public class UpdateUserView
         this.userRepository = userRepository;
     }
 
-    public async Task updateUser()
+    public async void updateUser()
     {
         Console.Write("Which user should be updated?: ");
         int id = int.Parse(Console.ReadLine());
