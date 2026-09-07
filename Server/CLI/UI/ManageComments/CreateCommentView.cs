@@ -3,11 +3,11 @@ using Entities;
 
 namespace CLI.UI.ManageComments;
 
-public class CreateComment
+public class CreateCommentView
 {
     private readonly ICommentRepository commentRepository;
     
-    public  CreateComment(ICommentRepository commentRepository)
+    public  CreateCommentView(ICommentRepository commentRepository)
     {
         this.commentRepository = commentRepository;
     }
