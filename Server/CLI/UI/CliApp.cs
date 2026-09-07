@@ -1,4 +1,5 @@
-﻿using CLI.UI.ManagePosts;
+﻿using CLI.UI.ManageComments;
+using CLI.UI.ManagePosts;
 using CLI.UI.ManageUsers;
 using RepositoryContracts;
 
@@ -11,6 +12,7 @@ public class CliApp
     private readonly IUserRepository userRepository;
     private ManagePostsView managePostsView;
     private ManageUsersView manageUsersView;
+    private ManageCommentView manageCommentView;
     
     public CliApp(IUserRepository userRepository,
         ICommentRepository commentRepository, IPostRepository postRepository)
@@ -37,7 +39,10 @@ public class CliApp
                 managePostsView = new ManagePostsView(postRepository, commentRepository);
                 managePostsView.Options();
                 break;
-            case "2" : break;
+            case "2" : 
+                manageCommentView = new ManageCommentView(commentRepository);
+                manageCommentView.Options();
+                break;
             case "3" : 
                 manageUsersView = new ManageUsersView(userRepository);
                 manageUsersView.Options();

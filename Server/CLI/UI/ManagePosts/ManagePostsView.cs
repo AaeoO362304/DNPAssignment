@@ -44,12 +44,12 @@ public class ManagePostsView
                 singlePostView.ShowPost();
                 break;
             case "4" :
-                deletePostView = new DeletePostView(postRepository);
-                deletePostView.deletePost();
-                break;
-            case "5" :
                 updatePostView = new UpdatePostView(postRepository);
                 updatePostView.updatePost();
+                break;
+            case "5" :
+                deletePostView = new DeletePostView(postRepository);
+                deletePostView.deletePost();
                 break;
             
         }
