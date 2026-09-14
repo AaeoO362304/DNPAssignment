@@ -1,13 +1,14 @@
 ﻿using RepositoryContracts;
 using Entities;
+using FileRepositories;
 
 namespace CLI.UI.ManageUsers;
 
 public class CreateUserView
 {
-    private readonly IUserRepository userRepository;
+    private readonly UserFileRepository userRepository;
 
-    public CreateUserView(IUserRepository userRepository)
+    public CreateUserView(UserFileRepository userRepository)
     {
         this.userRepository = userRepository;
     }
@@ -16,7 +17,6 @@ public class CreateUserView
     {
         Console.Write("Username: ");
         String username = Console.ReadLine();
-        Console.WriteLine();
         Console.Write("Password: ");
         String password = Console.ReadLine();
         User user = new User(username, password);

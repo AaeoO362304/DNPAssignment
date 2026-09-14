@@ -1,13 +1,14 @@
 ﻿using RepositoryContracts;
 using Entities;
+using FileRepositories;
 
 namespace CLI.UI.ManagePosts;
 
 public class CreatePostView
 {
-    private readonly IPostRepository postRepository;
+    private readonly PostFileRepository postRepository;
 
-    public CreatePostView(IPostRepository postRepository)
+    public CreatePostView(PostFileRepository postRepository)
     {
         this.postRepository = postRepository;
     }
@@ -16,10 +17,8 @@ public class CreatePostView
     {
         Console.Write("What is your user id?: ");
         int userId = int.Parse(Console.ReadLine());
-        Console.WriteLine();
         Console.Write("Title: "); 
         String title = Console.ReadLine();
-        Console.WriteLine();
         Console.Write("Body: "); 
         String body = Console.ReadLine();
         Post post = new Post(title, body, userId);

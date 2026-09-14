@@ -1,13 +1,14 @@
 ﻿using RepositoryContracts;
 using Entities;
+using FileRepositories;
 
 namespace CLI.UI.ManageUsers;
 
 public class UpdateUserView
 {
-    private readonly IUserRepository userRepository;
+    private readonly UserFileRepository userRepository;
 
-    public UpdateUserView(IUserRepository userRepository)
+    public UpdateUserView(UserFileRepository userRepository)
     {
         this.userRepository = userRepository;
     }
@@ -17,10 +18,8 @@ public class UpdateUserView
         Console.Write("Which user should be updated?: ");
         int id = int.Parse(Console.ReadLine());
         User user = await userRepository.GetSingleAsync(id);
-        Console.WriteLine();
         Console.Write("New User Name: ");
         String?  name = Console.ReadLine();
-        Console.WriteLine();
         Console.Write("New User Password: ");
         String?  password = Console.ReadLine();
         if (name != null) user.UserName = name;

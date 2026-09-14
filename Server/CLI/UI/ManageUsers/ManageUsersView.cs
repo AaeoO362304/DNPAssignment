@@ -1,16 +1,17 @@
-﻿using RepositoryContracts;
+﻿using FileRepositories;
+using RepositoryContracts;
 
 namespace CLI.UI.ManageUsers;
 
 public class ManageUsersView
 {
-    private readonly IUserRepository userRepository;
+    private readonly UserFileRepository userRepository;
     private ListUsersView listUsersView;
     private CreateUserView createUserView;
     private DeleteUserView deleteUserView;
     private UpdateUserView updateUserView;
 
-    public ManageUsersView(IUserRepository userRepository)
+    public ManageUsersView(UserFileRepository userRepository)
     {
         this.userRepository = userRepository;
     }

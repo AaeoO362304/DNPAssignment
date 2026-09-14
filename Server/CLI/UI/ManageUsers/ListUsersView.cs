@@ -1,20 +1,21 @@
 ﻿using RepositoryContracts;
 using Entities;
+using FileRepositories;
 
 namespace CLI.UI.ManageUsers;
 
 public class ListUsersView
 {
-    private readonly IUserRepository userRepository;
+    private readonly UserFileRepository userRepository;
     
-    public ListUsersView(IUserRepository userRepository)
+    public ListUsersView(UserFileRepository userRepository)
     {
         this.userRepository = userRepository;
     }
 
-    public void ShowAllUsers()
+    public async void ShowAllUsers()
     {
-        List<User> users = new List<User>(userRepository.GetMany()) ;
+        List<User> users = (await  userRepository.GetMany()).ToList() ;
         for (int i = 0; i < users.Count; i++)
         {
             Console.WriteLine(users[i]);

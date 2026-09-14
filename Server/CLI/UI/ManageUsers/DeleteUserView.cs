@@ -1,12 +1,13 @@
-﻿using RepositoryContracts;
+﻿using FileRepositories;
+using RepositoryContracts;
 
 namespace CLI.UI.ManageUsers;
 
 public class DeleteUserView
 {
-    private readonly IUserRepository userRepository;
+    private readonly UserFileRepository userRepository;
 
-    public DeleteUserView(IUserRepository userRepository)
+    public DeleteUserView(UserFileRepository userRepository)
     {
         this.userRepository = userRepository;
     }

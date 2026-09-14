@@ -1,20 +1,17 @@
 ﻿using Entities;
+using FileRepositories;
 using RepositoryContracts;
 
 namespace CLI.UI.ManagePosts;
 
-public class ListPostsView
+public class ListPostsView(PostFileRepository postRepository)
 {
-    private readonly IPostRepository postRepository;
-    
-    public  ListPostsView(IPostRepository postRepository)
-    {
-        this.postRepository = postRepository;
-    }
+    private readonly PostFileRepository postRepository = postRepository;
 
-    public void ShowAllPosts()
+    public async Task ShowAllPosts()
     {
-        List<Post> posts = new List<Post>(postRepository.GetMany()) ;
+        List<Post> posts =
+            (await postRepository.GetMany()).ToList(); 
         for (int i = 0; i < posts.Count; i++)
         {
             Console.WriteLine(posts[i]);

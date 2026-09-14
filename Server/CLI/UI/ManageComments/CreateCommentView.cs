@@ -16,13 +16,13 @@ public class CreateCommentView
     {
         Console.Write("Under which post you want to comment?: ");
         int postID = int.Parse(Console.ReadLine());
-        Console.WriteLine();
         Console.Write("Who are you (UserID): ");
         int userID = int.Parse(Console.ReadLine());
-        Console.WriteLine();
         Console.Write("New Comment: ");
         String? body = Console.ReadLine();
-        Comment comment = new Comment(body, postID, userID ); 
-        
+        Comment comment = new Comment(body, postID, userID );
+
+        commentRepository.AddAsync(comment);
+
     }
 }

@@ -1,18 +1,20 @@
-﻿using RepositoryContracts;
+﻿using Entities;
+using FileRepositories;
+using RepositoryContracts;
 
 namespace CLI.UI.ManagePosts;
 
 public class ManagePostsView
 {
-    private readonly IPostRepository postRepository;
-    private readonly ICommentRepository commentRepository;
+    private readonly PostFileRepository postRepository;
+    private readonly CommentFileRepository commentRepository;
     private CreatePostView createPostView;
     private ListPostsView listPostsView;
     private SinglePostView singlePostView;
     private DeletePostView deletePostView;
     private UpdatePostView updatePostView;
     
-    public ManagePostsView(IPostRepository postRepository, ICommentRepository commentRepository)
+    public ManagePostsView(PostFileRepository postRepository, CommentFileRepository commentRepository)
     {
         this.postRepository = postRepository;
         this.commentRepository = commentRepository;
@@ -48,7 +50,7 @@ public class ManagePostsView
                 updatePostView.updatePost();
                 break;
             case "5" :
-                deletePostView = new DeletePostView(postRepository);
+                deletePostView = new DeletePostView(postRepository, commentRepository);
                 deletePostView.deletePost();
                 break;
             

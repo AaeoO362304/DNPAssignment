@@ -1,14 +1,15 @@
 ﻿using CLI.UI.ManagePosts;
+using FileRepositories;
 using RepositoryContracts;
 
 namespace CLI.UI.ManageComments;
 
 public class ManageCommentView
 {
-    private readonly ICommentRepository commentRepository;
+    private readonly CommentFileRepository commentRepository;
     private CreateCommentView createCommentView;
 
-    public ManageCommentView(ICommentRepository commentRepository)
+    public ManageCommentView(CommentFileRepository commentRepository)
     {
         this.commentRepository = commentRepository;
     }

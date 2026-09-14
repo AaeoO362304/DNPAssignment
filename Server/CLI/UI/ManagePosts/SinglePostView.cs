@@ -1,31 +1,39 @@
 ﻿using Entities;
+using FileRepositories;
 using RepositoryContracts;
 
 namespace CLI.UI.ManagePosts;
 
 public class SinglePostView
 {
-    private readonly IPostRepository postRepository;
-    private readonly ICommentRepository commentRepository;
+    private readonly PostFileRepository postRepository;
+    private readonly CommentFileRepository commentRepository;
     
-    public  SinglePostView(IPostRepository postRepository, ICommentRepository commentRepository)
+    public  SinglePostView(PostFileRepository postRepository, CommentFileRepository commentRepository)
     {
         this.postRepository = postRepository;
         this.commentRepository = commentRepository;
     }
 
-    public async void ShowPost()
+    public async Task ShowPost()
     {
         Console.WriteLine("Which post you want to view?");
+
         int postID = int.Parse(Console.ReadLine());
+
         Post post = await postRepository.GetSingleAsync(postID);
+
+        IQueryable<Comment> postComments =
+            await commentRepository.GetManyFromPost(postID);
+
         List<Comment> comments =
-            new List<Comment>(commentRepository.GetManyFromPost(postID));
+            new List<Comment>(postComments);
+
         Console.WriteLine(post);
-        for (int i=0; i < comments.Count; i++)
+
+        for (int i = 0; i < comments.Count; i++)
         {
             Console.WriteLine(comments[i]);
         }
-        
     }
 }

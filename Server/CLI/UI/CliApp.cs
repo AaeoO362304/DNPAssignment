@@ -1,21 +1,22 @@
 ﻿using CLI.UI.ManageComments;
 using CLI.UI.ManagePosts;
 using CLI.UI.ManageUsers;
+using FileRepositories;
 using RepositoryContracts;
 
 namespace CLI.UI;
 
 public class CliApp
 {
-    private readonly IPostRepository postRepository;
-    private readonly ICommentRepository commentRepository;
-    private readonly IUserRepository userRepository;
+    private readonly PostFileRepository postRepository;
+    private readonly CommentFileRepository commentRepository;
+    private readonly UserFileRepository userRepository;
     private ManagePostsView managePostsView;
     private ManageUsersView manageUsersView;
     private ManageCommentView manageCommentView;
     
-    public CliApp(IUserRepository userRepository,
-        ICommentRepository commentRepository, IPostRepository postRepository)
+    public CliApp(UserFileRepository userRepository,
+        CommentFileRepository commentRepository, PostFileRepository postRepository)
     {
         this.userRepository = userRepository;
         this.commentRepository = commentRepository;

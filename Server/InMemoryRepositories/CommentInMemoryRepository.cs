@@ -92,12 +92,12 @@ public class CommentInMemoryRepository : ICommentRepository
         return Task.FromResult(comment);
     }
     
-    public IQueryable<Comment> GetMany()
+    public async Task<IQueryable<Comment>> GetMany()
     {
         return comments.AsQueryable();
     }
 
-    public IQueryable<Comment> GetManyFromPost(int id)
+    public async Task<IQueryable<Comment>> GetManyFromPost(int id)
     {
         List<Comment> postComments = [];
         for (int i = 0; i < comments.Count; i++)

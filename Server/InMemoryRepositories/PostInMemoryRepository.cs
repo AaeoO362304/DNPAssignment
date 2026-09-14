@@ -65,7 +65,7 @@ public class PostInMemoryRepository : IPostRepository
         return Task.FromResult(post);
     }
     
-    public IQueryable<Post> GetMany()
+    public async Task<IQueryable<Post>> GetMany()
     {
         return posts.AsQueryable();
     }
