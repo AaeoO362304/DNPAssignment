@@ -85,9 +85,9 @@ public class UserFileRepository : IUserRepository
         return existingUser;
     }
 
-    public async Task<IQueryable<User>> GetMany()
+    public IQueryable<User> GetMany()
     {
-        string usersAsJson = await File.ReadAllTextAsync(filePath);
+        string usersAsJson = File.ReadAllTextAsync(filePath).Result;
         List<User>? users = JsonSerializer.Deserialize<List<User>>(usersAsJson)!;
         users ??= [];
         

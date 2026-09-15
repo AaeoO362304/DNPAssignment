@@ -63,7 +63,7 @@ public class UserInMemoryRepository : IUserRepository
         return Task.FromResult(user);
     }
     
-    public async Task<IQueryable<User>> GetMany()
+    public IQueryable<User> GetMany()
     {
         return users.AsQueryable();
     }

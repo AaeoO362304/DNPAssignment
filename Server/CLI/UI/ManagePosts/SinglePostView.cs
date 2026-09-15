@@ -24,7 +24,7 @@ public class SinglePostView
         Post post = await postRepository.GetSingleAsync(postID);
 
         IQueryable<Comment> postComments =
-            await commentRepository.GetManyFromPost(postID);
+            commentRepository.GetManyFromPost(postID);
 
         List<Comment> comments =
             new List<Comment>(postComments);

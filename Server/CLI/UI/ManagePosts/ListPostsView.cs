@@ -11,7 +11,7 @@ public class ListPostsView(PostFileRepository postRepository)
     public async Task ShowAllPosts()
     {
         List<Post> posts =
-            (await postRepository.GetMany()).ToList(); 
+            postRepository.GetMany().ToList(); 
         for (int i = 0; i < posts.Count; i++)
         {
             Console.WriteLine(posts[i]);

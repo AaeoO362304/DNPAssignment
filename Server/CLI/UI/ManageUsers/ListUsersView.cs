@@ -13,9 +13,9 @@ public class ListUsersView
         this.userRepository = userRepository;
     }
 
-    public async void ShowAllUsers()
+    public void ShowAllUsers()
     {
-        List<User> users = (await  userRepository.GetMany()).ToList() ;
+        List<User> users = userRepository.GetMany().ToList() ;
         for (int i = 0; i < users.Count; i++)
         {
             Console.WriteLine(users[i]);
