@@ -21,8 +21,7 @@ public class UserController : ControllerBase
             .Select(user => new UserDto
             {
                 Id = user.Id,
-                UserName = user.UserName,
-                Password = user.Password
+                UserName = user.UserName
             });
 
         return Ok(users);
@@ -39,8 +38,7 @@ public class UserController : ControllerBase
         UserDto userDto = new()
         {
             Id = user.Id,
-            UserName = user.UserName,
-            Password = user.Password
+            UserName = user.UserName
         };
 
         return Ok(userDto);
@@ -57,8 +55,7 @@ public class UserController : ControllerBase
         UserDto userDto = new()
         {
             Id = created.Id,
-            UserName = created.UserName,
-            Password = created.Password
+            UserName = created.UserName
         };
 
         return Created($"/users/{userDto.Id}", userDto);
