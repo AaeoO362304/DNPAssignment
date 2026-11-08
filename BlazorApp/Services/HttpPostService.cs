@@ -22,11 +22,6 @@ public class HttpPostService : IPostService
         return post ?? throw new InvalidOperationException("Empty response");
     }
 
-    public Task<PostDto> AddUserAsync(CreatePostDto request)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task UpdatePostAsync(int id, UpdatePostDto request)
     {
         HttpResponseMessage response = await client.PutAsJsonAsync("posts/" + id, request);

@@ -85,7 +85,7 @@ public class CommentController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<ActionResult> UpdateComment(
         int id,
-        [FromBody] CreateCommentDto request)
+        [FromBody] UpdateCommentDto request)
     {
         Comment comment = await commentRepository.GetSingleAsync(id);
 
@@ -96,12 +96,10 @@ public class CommentController : ControllerBase
 
         Comment updatedComment = new(
             request.Body,
-            request.PostId,
-            request.UserId
+            comment.PostId,
+            comment.UserId
         );
-
-        // Preserve the ID of the comment being updated.
-        // This requires your Comment entity to support setting its ID.
+        
         await commentRepository.UpdateAsync(updatedComment);
 
         return NoContent();

@@ -69,14 +69,14 @@ public class PostController : ControllerBase
 
     [HttpPut("{id:int}")]
     public async Task<ActionResult> UpdatePost(
-        int id, [FromBody] CreatePostDto request)
+        int id, [FromBody] UpdatePostDto request)
     {
         Post existing = await postRepository.GetSingleAsync(id);
 
         if (existing == null)
             return NotFound();
 
-        Post updated = new(request.Title, request.Body, request.UserId)
+        Post updated = new(request.Title, request.Body, existing.UserId)
         {
             Id = id
         };

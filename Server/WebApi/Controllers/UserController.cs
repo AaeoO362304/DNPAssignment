@@ -66,7 +66,7 @@ public class UserController : ControllerBase
 
     [HttpPut("{id:int}")]
     public async Task<ActionResult> UpdateUser(
-        int id, [FromBody] CreateUserDto request)
+        int id, [FromBody] UpdateUserDto request)
     {
         User existing = await userRepository.GetSingleAsync(id);
 
