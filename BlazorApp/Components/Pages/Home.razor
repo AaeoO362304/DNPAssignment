@@ -36,6 +36,9 @@ Here you can browse interesting posts.
             return;
 
         userName = user.Identity.Name;
-        userId = int.Parse(user.FindFirst("Id")!.Value);
+        if (int.TryParse(user.FindFirst("Id")?.Value, out int id))
+        {
+            userId = id;
+        }
     }
 }
