@@ -1,5 +1,8 @@
 ﻿@page "/"
 @inject NavigationManager NavMgr
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthProvider
 <PageTitle>Home</PageTitle>
 
 <h1>Reddit Clone</h1>
@@ -16,3 +19,23 @@ Here you can browse interesting posts.
 <button @onclick='() => NavMgr.NavigateTo("/login")'>
     go to login
 </button>
+
+<p>Username: @userName</p>
+<p>User ID: @userId</p>
+
+@code
+{private string? userName;
+    private int userId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        AuthenticationState state = await AuthProvider.GetAuthenticationStateAsync();
+        ClaimsPrincipal user = state.User;
+
+        if (user.Identity?.IsAuthenticated != true)
+            return;
+
+        userName = user.Identity.Name;
+        userId = int.Parse(user.FindFirst("Id")!.Value);
+    }
+}
