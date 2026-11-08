@@ -11,18 +11,27 @@ public class HttpUserService : IUserService
         this.client = client;
         }
 
-    public Task<UserDto> AddUserAsync(CreateUserDto request)
+    public async Task<UserDto> AddUserAsync(CreateUserDto request)
     {
-        return Task.FromResult(new UserDto());
+        HttpResponseMessage response = await client.PostAsJsonAsync("users/", request);
+        
+        response.EnsureSuccessStatusCode();
+        
+        UserDto? user =  await response.Content.ReadFromJsonAsync<UserDto>();
+        
+        return user ?? throw new InvalidOperationException("Empty response");
     }
 
-    public Task UpdateUserAsync(int id, UpdateUserDto request)
+    public async Task UpdateUserAsync(int id, UpdateUserDto request)
     {
-        return Task.CompletedTask;
+        HttpResponseMessage response = await client.PutAsJsonAsync("users/" + id, request);
+        response.EnsureSuccessStatusCode();
     }
 
-    public Task DeleteUserAsync(int id)
+    public async Task DeleteUserAsync(int id)
     {
-        return Task.CompletedTask;
+        HttpResponseMessage response = await client.DeleteAsync("users/" + id);
+        
+        response.EnsureSuccessStatusCode();
     }
 }
