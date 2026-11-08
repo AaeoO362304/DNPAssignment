@@ -1,0 +1,45 @@
+﻿@page "/login"
+@using BlazorApp.Auth
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthProvider
+@inject NavigationManager navMgr
+
+<h3>LoginPage</h3>
+
+@code {
+    private string userName;
+    private string password;
+    private string errorLabel;
+
+    private async Task LoginAsync()
+    {
+        errorLabel = "";
+        try
+        {
+            await ((SimpleAuthProvider)AuthProvider).Login(userName, password);
+            navMgr.NavigateTo("/");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            errorLabel = $"Error: {e.Message}";
+        }
+    }
+}
+
+@page "/"
+@inject NavigationManager NavMgr
+<PageTitle>Home</PageTitle>
+
+<h1>Reddit Clone</h1>
+
+<AuthorizeView>
+    <Authorized>
+        <h3>Hello, @context.User.Identity.Name</h3>
+    </Authorized>
+    <NotAuthorized>
+        lol you are not logged in!
+    </NotAuthorized>
+</AuthorizeView>
+Here you can browse interesting posts.
+<button @onclick='() => NavMgr.NavigateTo("login")'>go to login</button>

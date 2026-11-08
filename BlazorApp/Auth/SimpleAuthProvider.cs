@@ -1,4 +1,6 @@
-﻿using System.Security.Claims;
+﻿
+using System.Net.Http.Json;
+using System.Security.Claims;
 using System.Text.Json;
 using ApiContracts;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -13,6 +15,7 @@ public class SimpleAuthProvider : AuthenticationStateProvider
     public SimpleAuthProvider(HttpClient httpClient)
     {
         this.httpClient = httpClient;
+        currentClaimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity());
     }
 
     public async Task Login(string userName, string password)
@@ -22,39 +25,47 @@ public class SimpleAuthProvider : AuthenticationStateProvider
             new LoginRequest(userName, password));
 
         string content = await response.Content.ReadAsStringAsync();
+
         if (!response.IsSuccessStatusCode)
         {
             throw new Exception(content);
         }
 
-        UserDto userDto = JsonSerializer.Deserialize<UserDto>(content,
+        UserDto userDto = JsonSerializer.Deserialize<UserDto>(
+            content,
             new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             })!;
 
-
-        List<Claim> claims = new List<Claim>()
+        List<Claim> claims = new()
         {
             new Claim(ClaimTypes.Name, userDto.UserName),
-            new Claim(“Id”, userDto.Id.ToString()),
-            // Add more claims here with your own claim type as a string, e.g.:
-            // new Claim("DateOfBirth", userDto.DateOfBirth.ToString("yyyy-MM-dd"))
-            // new Claim("IsAdmin", userDto.IsAdmin.ToString())
-            // new Claim("IsModerator", userDto.IsModerator.ToString())
-            // new Claim("Email", userDto.Email)
+            new Claim("Id", userDto.Id.ToString())
         };
+
         ClaimsIdentity identity = new ClaimsIdentity(claims, "apiauth");
+
         currentClaimsPrincipal = new ClaimsPrincipal(identity);
 
         NotifyAuthenticationStateChanged(
             Task.FromResult(new AuthenticationState(currentClaimsPrincipal))
         );
     }
-    
 
     public override Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        throw new NotImplementedException();
+        return Task.FromResult(
+            new AuthenticationState(currentClaimsPrincipal)
+        );
+    }
+
+    public void Logout()
+    {
+        currentClaimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity());
+
+        NotifyAuthenticationStateChanged(
+            Task.FromResult(new AuthenticationState(currentClaimsPrincipal))
+        );
     }
 }
