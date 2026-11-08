@@ -2,6 +2,10 @@ using BlazorApp.Components;
 using BlazorApp.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
+using System.Security.Claims;
+using System.Net.Http.Json;
+using Microsoft.AspNetCore.Authentication;
+using ApiContracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,6 +51,49 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseAntiforgery();
+
+
+app.MapPost("/session/login", async (
+    LoginRequest request,
+    IHttpClientFactory httpClientFactory,
+    HttpContext context) =>
+{
+    HttpClient apiClient = httpClientFactory.CreateClient("Api");
+
+    HttpResponseMessage response = await apiClient.PostAsJsonAsync(
+        "auth/login", request);
+
+    if (!response.IsSuccessStatusCode)
+    {
+        return Results.Unauthorized();
+    }
+
+    UserDto? user = await response.Content.ReadFromJsonAsync<UserDto>();
+
+    if (user == null)
+    {
+        return Results.Unauthorized();
+    }
+
+    List<Claim> claims = new()
+    {
+        new Claim(ClaimTypes.Name, user.UserName),
+        new Claim("Id", user.Id.ToString())
+    };
+
+    ClaimsIdentity identity = new(
+        claims,
+        CookieAuthenticationDefaults.AuthenticationScheme);
+
+    ClaimsPrincipal principal = new(identity);
+
+    await context.SignInAsync(
+        CookieAuthenticationDefaults.AuthenticationScheme,
+        principal);
+
+    return Results.Ok();
+});
+
 
 app.MapStaticAssets();
 
