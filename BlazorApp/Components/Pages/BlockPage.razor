@@ -1,0 +1,30 @@
+﻿@page "/MustBeLoggedInToVie"
+@using System.Security.Claims
+@attribute [Authorize]
+
+<h3>BlockPage</h3>
+
+<AuthorizeView>
+    <Authorized>
+        <h3>Hello @context.User.Identity.Name</h3>
+        <p>@context.User.Claims.First(claim=>claim.Type.Equals(ClaimTypes.Role)).Value</p>
+        <p>
+            Your claims include:
+            <ol>
+                @foreach (Claim claim in context.User.Claims)
+                {
+                    <li>
+                        <label>@claim.Type: @claim.Value</label>
+                    </li>
+                }
+            </ol>
+        </p>
+    </Authorized>
+    <NotAuthorized>
+        <p>You are not logged in.</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    [CascadingParameter] public Task<AuthenticationState> State { get; set; }
+}
