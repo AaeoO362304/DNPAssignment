@@ -53,46 +53,55 @@ app.UseAuthorization();
 app.UseAntiforgery();
 
 
+
 app.MapPost("/session/login", async (
-    LoginRequest request,
-    IHttpClientFactory httpClientFactory,
-    HttpContext context) =>
-{
-    HttpClient apiClient = httpClientFactory.CreateClient("Api");
-
-    HttpResponseMessage response = await apiClient.PostAsJsonAsync(
-        "auth/login", request);
-
-    if (!response.IsSuccessStatusCode)
+        HttpContext context,
+        IHttpClientFactory httpClientFactory) =>
     {
-        return Results.Unauthorized();
-    }
+        var form = await context.Request.ReadFormAsync();
 
-    UserDto? user = await response.Content.ReadFromJsonAsync<UserDto>();
+        string userName = form["userName"].ToString();
+        string password = form["password"].ToString();
 
-    if (user == null)
-    {
-        return Results.Unauthorized();
-    }
+        LoginRequest request = new(userName, password);
 
-    List<Claim> claims = new()
-    {
-        new Claim(ClaimTypes.Name, user.UserName),
-        new Claim("Id", user.Id.ToString())
-    };
+        HttpClient apiClient = httpClientFactory.CreateClient("Api");
 
-    ClaimsIdentity identity = new(
-        claims,
-        CookieAuthenticationDefaults.AuthenticationScheme);
+        HttpResponseMessage response = await apiClient.PostAsJsonAsync(
+            "auth/login", request);
 
-    ClaimsPrincipal principal = new(identity);
+        if (!response.IsSuccessStatusCode)
+        {
+            return Results.Redirect("/login?error=1");
+        }
 
-    await context.SignInAsync(
-        CookieAuthenticationDefaults.AuthenticationScheme,
-        principal);
+        UserDto? user = await response.Content.ReadFromJsonAsync<UserDto>();
 
-    return Results.Ok();
-});
+        if (user == null)
+        {
+            return Results.Redirect("/login?error=1");
+        }
+
+        List<Claim> claims = new()
+        {
+            new Claim(ClaimTypes.Name, user.UserName),
+            new Claim("Id", user.Id.ToString())
+        };
+
+        ClaimsIdentity identity = new(
+            claims,
+            CookieAuthenticationDefaults.AuthenticationScheme);
+
+        ClaimsPrincipal principal = new(identity);
+
+        await context.SignInAsync(
+            CookieAuthenticationDefaults.AuthenticationScheme,
+            principal);
+
+        return Results.Redirect("/");
+    })
+    .DisableAntiforgery();
+
 
 
 app.MapStaticAssets();

@@ -1,56 +1,28 @@
 ﻿@page "/login"
-@using System.Net.Http.Json
-@using ApiContracts
-@inject IHttpClientFactory HttpClientFactory
-@inject NavigationManager NavMgr
+@using Microsoft.AspNetCore.Components
 
 <h3>This is where you login</h3>
 
-<label>User name:</label>
-<input type="text" @bind="userName" />
+<form method="post" action="/session/login">
+    <label>User name:</label>
+    <input type="text" name="userName" required />
 
-<br />
+    <br />
 
-<label>Password:</label>
-<input type="password" @bind="password" />
+    <label>Password:</label>
+    <input type="password" name="password" required />
 
-@if (!string.IsNullOrEmpty(errorLabel))
+    <br />
+
+    <button type="submit">Log in</button>
+</form>
+
+@if (Error == "1")
 {
-    <p style="color: red">@errorLabel</p>
+    <p style="color: red">Invalid username or password.</p>
 }
 
-<br />
-
-<button @onclick="LoginAsync">Log in</button>
-
 @code {
-    private string userName = "";
-    private string password = "";
-    private string errorLabel = "";
-
-    private async Task LoginAsync()
-    {
-        errorLabel = "";
-
-        try
-        {
-            HttpResponseMessage response = await HttpClientFactory
-                .CreateClient()
-                .PostAsJsonAsync(
-                    NavMgr.BaseUri + "session/login",
-                    new LoginRequest(userName, password));
-
-            if (!response.IsSuccessStatusCode)
-            {
-                errorLabel = "Invalid username or password.";
-                return;
-            }
-
-            NavMgr.NavigateTo("/", forceLoad: true);
-        }
-        catch (Exception e)
-        {
-            errorLabel = $"Error: {e.Message}";
-        }
-    }
+    [SupplyParameterFromQuery(Name = "error")]
+    public string? Error { get; set; }
 }
