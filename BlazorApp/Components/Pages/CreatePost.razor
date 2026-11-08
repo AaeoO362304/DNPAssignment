@@ -1,0 +1,117 @@
+﻿<h3>CreatePost</h3>
+
+@code {
+    
+}@page "/posts/create"
+@attribute [Authorize]
+
+@using ApiContracts
+@using System.Security.Claims
+@using BlazorApp.Services
+
+@inject IPostService PostService
+@inject AuthenticationStateProvider AuthProvider
+
+<h3>Create a Post</h3>
+
+<div>
+    <label>Title:</label>
+    <br />
+    <input @bind="title" placeholder="Enter post title" />
+</div>
+
+<br />
+
+<div>
+    <label>Body:</label>
+    <br />
+    <textarea @bind="body" placeholder="Write your post here"></textarea>
+</div>
+
+<br />
+
+<button @onclick="CreatePostAsync" disabled="@isSaving">
+    @(isSaving ? "Creating..." : "Create Post")
+</button>
+
+@if (!string.IsNullOrEmpty(successMessage))
+{
+    <p style="color: green">@successMessage</p>
+}
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <p style="color: red">@errorMessage</p>
+}
+
+@code {
+    private string title = "";
+    private string body = "";
+
+    private string successMessage = "";
+    private string errorMessage = "";
+
+    private bool isSaving = false;
+
+    private async Task CreatePostAsync()
+    {
+        successMessage = "";
+        errorMessage = "";
+
+        if (string.IsNullOrWhiteSpace(title) ||
+            string.IsNullOrWhiteSpace(body))
+        {
+            errorMessage = "Please enter both a title and a body.";
+            return;
+        }
+
+        isSaving = true;
+
+        try
+        {
+            // Get the currently logged-in user
+            AuthenticationState authState =
+                await AuthProvider.GetAuthenticationStateAsync();
+
+            ClaimsPrincipal user = authState.User;
+
+            if (user.Identity?.IsAuthenticated != true)
+            {
+                errorMessage = "You must be logged in to create a post.";
+                return;
+            }
+
+            // Get the user's ID from their authentication claims
+            string? idClaim = user.FindFirst("Id")?.Value;
+
+            if (!int.TryParse(idClaim, out int userId))
+            {
+                errorMessage = "Could not retrieve your user ID.";
+                return;
+            }
+
+            // Create the post using the logged-in user's ID
+            CreatePostDto request = new()
+            {
+                Title = title,
+                Body = body,
+                UserId = userId
+            };
+
+            await PostService.AddPostAsync(request);
+
+            successMessage = "Post created successfully!";
+
+            title = "";
+            body = "";
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Something went wrong: {ex.Message}";
+        }
+        finally
+        {
+            isSaving = false;
+        }
+    }
+}
