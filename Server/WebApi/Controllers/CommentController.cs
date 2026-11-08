@@ -98,7 +98,11 @@ public class CommentController : ControllerBase
             request.Body,
             comment.PostId,
             comment.UserId
-        );
+        )
+        {
+            Id = id
+        };
+        
         
         await commentRepository.UpdateAsync(updatedComment);
 
