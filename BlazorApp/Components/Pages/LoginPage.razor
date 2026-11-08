@@ -1,37 +1,27 @@
 ﻿@page "/login"
-@using BlazorApp.Auth
-@using Microsoft.AspNetCore.Components.Authorization
-@inject AuthenticationStateProvider AuthProvider
-@inject NavigationManager navMgr
+@using System.Net.Http.Json
+@using ApiContracts
+@inject IHttpClientFactory HttpClientFactory
+@inject NavigationManager NavMgr
 
 <h3>This is where you login</h3>
 
-<AuthorizeView>
-    <NotAuthorized>
-        <label>User name:</label>
-        <input type="text" @bind="userName" />
+<label>User name:</label>
+<input type="text" @bind="userName" />
 
-        <br />
+<br />
 
-        <label>Password:</label>
-        <input type="password" @bind="password" />
+<label>Password:</label>
+<input type="password" @bind="password" />
 
-        @if (!string.IsNullOrEmpty(errorLabel))
-        {
-            <label style="color: red">
-                @errorLabel
-            </label>
-        }
+@if (!string.IsNullOrEmpty(errorLabel))
+{
+    <p style="color: red">@errorLabel</p>
+}
 
-        <br />
+<br />
 
-        <button @onclick="LoginAsync">Log in</button>
-    </NotAuthorized>
-
-    <Authorized>
-        <h3>Hello, @context.User.Identity?.Name</h3>
-    </Authorized>
-</AuthorizeView>
+<button @onclick="LoginAsync">Log in</button>
 
 @code {
     private string userName = "";
@@ -41,15 +31,25 @@
     private async Task LoginAsync()
     {
         errorLabel = "";
-        
+
         try
         {
-            await ((SimpleAuthProvider)AuthProvider).Login(userName, password);
-            navMgr.NavigateTo("/");
+            HttpResponseMessage response = await HttpClientFactory
+                .CreateClient()
+                .PostAsJsonAsync(
+                    NavMgr.BaseUri + "session/login",
+                    new LoginRequest(userName, password));
+
+            if (!response.IsSuccessStatusCode)
+            {
+                errorLabel = "Invalid username or password.";
+                return;
+            }
+
+            NavMgr.NavigateTo("/", forceLoad: true);
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
             errorLabel = $"Error: {e.Message}";
         }
     }
