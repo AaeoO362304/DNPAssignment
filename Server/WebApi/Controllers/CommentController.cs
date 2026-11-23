@@ -4,6 +4,7 @@ using Entities;
 using FileRepositories;
 using Microsoft.AspNetCore.Mvc;
 using RepositoryContracts;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebApi.Controllers;
 
@@ -46,9 +47,9 @@ public class CommentController : ControllerBase
     }
     
     [HttpGet]
-    public ActionResult<IEnumerable<CommentDto>> GetComments()
+    public async Task<ActionResult<IEnumerable<CommentDto>>> GetComments()
     {
-        IEnumerable<CommentDto> comments = commentRepository
+        IEnumerable<CommentDto> comments = await commentRepository
             .GetMany()
             .Select(comment => new CommentDto
             {
@@ -56,7 +57,8 @@ public class CommentController : ControllerBase
                 Body = comment.Body,
                 PostId = comment.PostId,
                 UserId = comment.UserId
-            });
+            })
+            .ToListAsync();
 
         return Ok(comments);
     }

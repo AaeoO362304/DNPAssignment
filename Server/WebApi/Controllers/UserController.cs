@@ -2,6 +2,7 @@
 using Entities;
 using Microsoft.AspNetCore.Mvc;
 using RepositoryContracts;
+using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("/users")]
@@ -15,14 +16,15 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<UserDto>> GetUsers()
+    public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
     {
-        IEnumerable<UserDto> users = userRepository.GetMany()
+        IEnumerable<UserDto> users = await userRepository.GetMany()
             .Select(user => new UserDto
             {
                 Id = user.Id,
                 UserName = user.UserName
-            });
+            })
+            .ToListAsync();
 
         return Ok(users);
     }

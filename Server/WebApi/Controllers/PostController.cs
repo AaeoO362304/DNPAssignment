@@ -2,6 +2,7 @@
 using Entities;
 using Microsoft.AspNetCore.Mvc;
 using RepositoryContracts;
+using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("/posts")]
@@ -15,16 +16,17 @@ public class PostController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<PostDto>> GetPosts()
+    public async Task<ActionResult<IEnumerable<PostDto>>> GetPosts()
     {
-        IEnumerable<PostDto> posts = postRepository.GetMany()
+        IEnumerable<PostDto> posts = await postRepository.GetMany()
             .Select(post => new PostDto
             {
                 Id = post.Id,
                 Title = post.Title,
                 Body = post.Body,
                 UserId = post.UserId
-            });
+            })
+            .ToListAsync();
 
         return Ok(posts);
     }
